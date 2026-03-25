@@ -85,12 +85,12 @@
 
     .zoom-controls {
       position: absolute;
-      bottom: 120px;
-      right: 12px;
+      bottom: calc(42% + 16px);
+      right: 16px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      z-index: 7;
+      z-index: 20;
       pointer-events: auto;
     }
 
@@ -433,7 +433,6 @@
       border-radius: 8px;
       opacity: 0.4;
       display: none;
-      color: rgba(255,255,255,0.9);
       font-size: 11px;
       text-align: center;
       line-height: 1.1;
@@ -441,6 +440,27 @@
       padding-top: 6px;
       z-index: 2;
       user-select: none;
+      overflow: hidden;
+    }
+
+    .zone .zone-label,
+    .zone .zone-bonus {
+      font-size: 11px;
+      color: #ffffff;
+      opacity: 0.85;
+      width: 100%;
+      display: block;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 4px;
+    }
+
+    .zone .zone-bonus {
+      margin-top: 2px;
+      font-size: 10px;
+      opacity: 0.8;
     }
 
     .zone.zone-fq { left: 60%; top: 16%; width: 130px; height: 100px; background: rgba(239, 68, 68, 0.45); }
@@ -510,51 +530,28 @@
 <body>
 <div id="app">
   <div class="map-area">
-    <svg id="mapSVG" viewBox="0 0 390 780" preserveAspectRatio="xMidYMid slice" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:0;">
-      <rect width="390" height="780" fill="#1a1a2e" />
-      <path d="M0,720 C120,700 270,700 390,720 L390,780 L0,780 Z" fill="#1a6eb5" fill-opacity="0.8" />
-      <text x="190" y="758" text-anchor="middle" font-size="11" fill="#bddfff">Mississippi River</text>
-
-      <!-- Layer 5: Zone overlays in SVG -->
-      <g id="zonesLayer" opacity="0.55">
-        <rect x="20" y="30" width="140" height="130" fill="#f59e0b" />
-        <text x="90" y="95" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">French Quarter</text>
-
-        <rect x="95" y="190" width="120" height="100" fill="#22c55e" />
-        <text x="155" y="255" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Garden District</text>
-
-        <rect x="152" y="245" width="100" height="90" fill="#22c55e" />
-        <text x="202" y="300" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Uptown</text>
-
-        <rect x="163" y="330" width="120" height="80" fill="#9ca3af" />
-        <text x="223" y="375" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Mid-City</text>
-
-        <rect x="190" y="360" width="120" height="75" fill="#9ca3af" />
-        <text x="250" y="405" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Warehouse</text>
-      </g>
-
-      <!-- Layer 6: Parade route overlay -->
-      <path d="M75,590 L405,140" stroke="#ea580c" stroke-width="5" stroke-linecap="round" stroke-dasharray="6 6" />
-      <path d="M75,590 L405,140" stroke="#fb923c" stroke-width="2" fill="none" />
-
-      <!-- Layer 7: Pickup pin marker -->
-      <circle id="pickupCircle" cx="200" cy="360" r="8" fill="#f5b330" stroke="#ffffff" stroke-width="2" opacity="0.9" />
-
-      <line x1="30" y1="650" x2="360" y2="200" stroke="#d1d5db" stroke-width="1.5" />
-      <text x="40" y="660" font-size="11" fill="#d1d5db" transform="rotate(-15 40,660)">Tchoupitoulas St</text>
-      <line x1="50" y1="620" x2="380" y2="170" stroke="#d1d5db" stroke-width="1.5" />
-      <text x="60" y="630" font-size="11" fill="#d1d5db" transform="rotate(-15 60,630)">Magazine St</text>
-      <line x1="75" y1="590" x2="405" y2="140" stroke="#ffffff" stroke-width="2.5" />
-      <text x="86" y="600" font-size="12" fill="#ffffff" font-weight="700" transform="rotate(-15 86,600)">St. Charles Ave</text>
-      <line x1="0" y1="520" x2="390" y2="520" stroke="#d1d5db" stroke-width="1" />
-      <text x="4" y="516" font-size="10" fill="#d1d5db">Napoleon Ave</text>
-      <line x1="0" y1="460" x2="390" y2="460" stroke="#d1d5db" stroke-width="1" />
-      <text x="4" y="456" font-size="10" fill="#d1d5db">Jefferson Ave</text>
-      <line x1="0" y1="410" x2="390" y2="410" stroke="#d1d5db" stroke-width="1" />
-      <text x="4" y="406" font-size="10" fill="#d1d5db">Louisiana Ave</text>
-      <line x1="0" y1="360" x2="390" y2="360" stroke="#d1d5db" stroke-width="1" />
-      <text x="4" y="356" font-size="10" fill="#d1d5db">Jackson Ave</text>
-      <text x="320" y="80" font-size="13" fill="#e5e7eb">French Quarter</text>
+    <svg id="mapSVG" viewBox="0 0 390 500" preserveAspectRatio="xMidYMid slice" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; transform-origin:center center; transition:transform 0.2s ease;">
+      <!-- Layer 1: Background -->
+      <rect width="390" height="500" fill="#1a1a2e" />
+      <!-- Layer 2: Mississippi River -->
+      <path d="M0,460 Q195,440 390,460 L390,500 L0,500 Z" fill="#1a6eb5" opacity="0.85" />
+      <text x="195" y="488" fill="#7ab8e8" font-size="11" text-anchor="middle">Mississippi River</text>
+      <!-- Layer 3: Diagonal Streets -->
+      <line x1="20" y1="480" x2="180" y2="20" stroke="#4a4a6a" stroke-width="2" />
+      <text x="60" y="380" fill="#6a6a8a" font-size="9" transform="rotate(-60 60,380)">Tchoupitoulas St</text>
+      <line x1="140" y1="480" x2="300" y2="20" stroke="#6a6a8a" stroke-width="2" />
+      <text x="175" y="380" fill="#8a8aaa" font-size="10" transform="rotate(-60 175,380)">Magazine St</text>
+      <line x1="260" y1="480" x2="420" y2="20" stroke="#ffffff" stroke-width="3" />
+      <text x="295" y="380" fill="#ffffff" font-size="11" font-weight="bold" transform="rotate(-60 295,380)">St. Charles Ave</text>
+      <!-- Layer 4: Cross Streets -->
+      <line x1="0" y1="120" x2="390" y2="120" stroke="#3a3a5a" stroke-width="1" />
+      <text x="8" y="117" fill="#8a8aaa" font-size="9">Napoleon Ave</text>
+      <line x1="0" y1="220" x2="390" y2="220" stroke="#3a3a5a" stroke-width="1" />
+      <text x="8" y="217" fill="#8a8aaa" font-size="9">Jefferson Ave</text>
+      <line x1="0" y1="320" x2="390" y2="320" stroke="#3a3a5a" stroke-width="1" />
+      <text x="8" y="317" fill="#8a8aaa" font-size="9">Louisiana Ave</text>
+      <line x1="0" y1="420" x2="390" y2="420" stroke="#3a3a5a" stroke-width="1" />
+      <text x="8" y="417" fill="#8a8aaa" font-size="9">Jackson Ave</text>
     </svg>
     <div class="parade-route" id="paradeRoute"></div>
     <div class="blocked-zone" id="blockedZone"></div>
@@ -643,7 +640,6 @@
   const paradeRoute = document.getElementById('paradeRoute');
   const blockedZone = document.getElementById('blockedZone');
   const pickupPin = document.getElementById('pickupPin');
-  const pickupCircle = document.getElementById('pickupCircle');
   const pinCard = document.getElementById('pinCard');
   const incentiveCard = document.getElementById('incentiveCard');
   const driverStatus = document.getElementById('driverStatus');
@@ -660,7 +656,7 @@
   const mapSVG = document.getElementById('mapSVG');
   const zoomInBtn = document.getElementById('zoomIn');
   const zoomOutBtn = document.getElementById('zoomOut');
-  let currentZoom = 1;
+  let zoomLevel = 1;
 
   const zoneStates = {
     frenchQuarter: false,
@@ -742,29 +738,57 @@
         el.className = `zone zone-${zone.toLowerCase().replace(/\s/g, '')} ${zoneStates[zone] ? 'active' : 'inactive'}`;
       }
 
-      el.innerHTML = `<div style="font-weight:700;">${zoneText}</div><div style="margin-top:4px; color:#f5b330; font-size:12px;">${zoneInfo ? zoneInfo.bonus : '+$0.00'}</div>`;
-      el.style.display = driverView ? 'block' : 'none';
+      el.innerHTML = `<span class="zone-label">${zoneText}</span><span class="zone-bonus">${zoneInfo ? zoneInfo.bonus : '+$0.00'}</span>`;
+      el.style.display = driverView ? 'flex' : 'none';
+      el.style.flexDirection = 'column';
+      el.style.justifyContent = 'center';
+      el.style.alignItems = 'center';
       el.style.cursor = driverView && zone !== 'frenchQuarter' ? 'pointer' : 'default';
       el.style.pointerEvents = driverView && zone !== 'frenchQuarter' ? 'auto' : 'none';
     });
     zoneLegend.style.display = driverView ? 'block' : 'none';
   }
 
-  function setMapZoom(zoomLevel) {
-    currentZoom = Math.max(1, Math.min(2, zoomLevel));
-    const width = 390 / currentZoom;
-    const height = 780 / currentZoom;
-    const x = (390 - width) / 2;
-    const y = (780 - height) / 2;
-    mapSVG.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+  function applyZoom() {
+    zoomLevel = Math.max(1, Math.min(2, zoomLevel));
+    mapSVG.style.transform = `scale(${zoomLevel})`;
+    mapSVG.style.transformOrigin = 'center center';
+    mapSVG.style.transition = 'transform 0.2s ease';
+
+    if (zoomLevel <= 1) {
+      zoomOutBtn.style.opacity = '0.4';
+      zoomOutBtn.style.cursor = 'not-allowed';
+      zoomOutBtn.disabled = true;
+    } else {
+      zoomOutBtn.style.opacity = '1';
+      zoomOutBtn.style.cursor = 'pointer';
+      zoomOutBtn.disabled = false;
+    }
+
+    if (zoomLevel >= 2) {
+      zoomInBtn.style.opacity = '0.4';
+      zoomInBtn.style.cursor = 'not-allowed';
+      zoomInBtn.disabled = true;
+    } else {
+      zoomInBtn.style.opacity = '1';
+      zoomInBtn.style.cursor = 'pointer';
+      zoomInBtn.disabled = false;
+    }
   }
 
-  function adjustZoom(delta) {
-    setMapZoom(currentZoom * (delta > 0 ? 1.15 : 0.85));
-  }
+  zoomInBtn.addEventListener('click', () => {
+    if (zoomLevel < 2) {
+      zoomLevel = Math.min(2, +(zoomLevel + 0.2).toFixed(2));
+      applyZoom();
+    }
+  });
 
-  zoomInBtn.addEventListener('click', () => adjustZoom(1));
-  zoomOutBtn.addEventListener('click', () => adjustZoom(-1));
+  zoomOutBtn.addEventListener('click', () => {
+    if (zoomLevel > 1) {
+      zoomLevel = Math.max(1, +(zoomLevel - 0.2).toFixed(2));
+      applyZoom();
+    }
+  });
 
   function toggleDriverView() {
     driverView = !driverView;
@@ -864,13 +888,6 @@
     pickupPin.style.opacity = 1;
     pickupPin.style.transform = 'translate(-50%, -100%) scale(1.1)';
 
-    const pickLeft = parseFloat(target.left) / 100;
-    const pickTop = parseFloat(target.top) / 100;
-    if (pickupCircle) {
-      pickupCircle.setAttribute('cx', (pickLeft * 390).toString());
-      pickupCircle.setAttribute('cy', (pickTop * 780).toString());
-    }
-
     pinCard.style.left = target.left;
     pinCard.style.top = `calc(${target.top} - 36px)`;
     pinCard.innerHTML = `<strong>${target.name}</strong><br>${target.mi} • ${target.walk} • ${value} blocks`;
@@ -903,7 +920,7 @@
   });
 
   setMode(false);
-  setMapZoom(1);
+  applyZoom();
 </script>
 </body>
 </html>
