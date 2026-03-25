@@ -83,6 +83,35 @@
     }
     #mapSVG { pointer-events: none; }
 
+    .zoom-controls {
+      position: absolute;
+      bottom: 120px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 7;
+      pointer-events: auto;
+    }
+
+    .zoom-controls button {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid #f1c40f;
+      background: #2d1b69;
+      color: #f1c40f;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .parade-route, .blocked-zone {
+      display: none !important;
+    }
+
     .parade-route {
       width: 250px;
       height: 180px;
@@ -485,6 +514,32 @@
       <rect width="390" height="780" fill="#1a1a2e" />
       <path d="M0,720 C120,700 270,700 390,720 L390,780 L0,780 Z" fill="#1a6eb5" fill-opacity="0.8" />
       <text x="190" y="758" text-anchor="middle" font-size="11" fill="#bddfff">Mississippi River</text>
+
+      <!-- Layer 5: Zone overlays in SVG -->
+      <g id="zonesLayer" opacity="0.55">
+        <rect x="20" y="30" width="140" height="130" fill="#f59e0b" />
+        <text x="90" y="95" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">French Quarter</text>
+
+        <rect x="95" y="190" width="120" height="100" fill="#22c55e" />
+        <text x="155" y="255" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Garden District</text>
+
+        <rect x="152" y="245" width="100" height="90" fill="#22c55e" />
+        <text x="202" y="300" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Uptown</text>
+
+        <rect x="163" y="330" width="120" height="80" fill="#9ca3af" />
+        <text x="223" y="375" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Mid-City</text>
+
+        <rect x="190" y="360" width="120" height="75" fill="#9ca3af" />
+        <text x="250" y="405" text-anchor="middle" font-size="12" fill="#ffffff" font-weight="700">Warehouse</text>
+      </g>
+
+      <!-- Layer 6: Parade route overlay -->
+      <path d="M75,590 L405,140" stroke="#ea580c" stroke-width="5" stroke-linecap="round" stroke-dasharray="6 6" />
+      <path d="M75,590 L405,140" stroke="#fb923c" stroke-width="2" fill="none" />
+
+      <!-- Layer 7: Pickup pin marker -->
+      <circle id="pickupCircle" cx="200" cy="360" r="8" fill="#f5b330" stroke="#ffffff" stroke-width="2" opacity="0.9" />
+
       <line x1="30" y1="650" x2="360" y2="200" stroke="#d1d5db" stroke-width="1.5" />
       <text x="40" y="660" font-size="11" fill="#d1d5db" transform="rotate(-15 40,660)">Tchoupitoulas St</text>
       <line x1="50" y1="620" x2="380" y2="170" stroke="#d1d5db" stroke-width="1.5" />
@@ -532,13 +587,17 @@
       <div><span class="dot gray"></span>Unavailable</div>
       <div><span class="dot red"></span>Parade Blocked</div>
     </div>
+    <div class="zoom-controls" id="zoomControls">
+      <button id="zoomIn" aria-label="Zoom in">+</button>
+      <button id="zoomOut" aria-label="Zoom out">−</button>
+    </div>
   </div>
 
   <div class="bottom-panel" id="bottomPanel">
     <div class="handle"></div>
     <div class="search-box" id="searchBox">
       <span class="icon">📍</span>
-      <input id="whereTo" type="text" value="Where to?" aria-label="Where to?" />
+      <input id="whereTo" type="text" value="Where to?" aria-label="Where to?" autocomplete="off" x-webkit-speech />
     </div>
 
     <button class="ride-btn" id="rideBtn">Request Whisk • $9–$12</button>
@@ -584,6 +643,7 @@
   const paradeRoute = document.getElementById('paradeRoute');
   const blockedZone = document.getElementById('blockedZone');
   const pickupPin = document.getElementById('pickupPin');
+  const pickupCircle = document.getElementById('pickupCircle');
   const pinCard = document.getElementById('pinCard');
   const incentiveCard = document.getElementById('incentiveCard');
   const driverStatus = document.getElementById('driverStatus');
@@ -597,6 +657,10 @@
   const driverSummary = document.getElementById('driverSummary');
   const driverEarningsCard = document.getElementById('driverEarningsCard');
   const zoneLegend = document.getElementById('zoneLegend');
+  const mapSVG = document.getElementById('mapSVG');
+  const zoomInBtn = document.getElementById('zoomIn');
+  const zoomOutBtn = document.getElementById('zoomOut');
+  let currentZoom = 1;
 
   const zoneStates = {
     frenchQuarter: false,
@@ -685,6 +749,22 @@
     });
     zoneLegend.style.display = driverView ? 'block' : 'none';
   }
+
+  function setMapZoom(zoomLevel) {
+    currentZoom = Math.max(1, Math.min(2, zoomLevel));
+    const width = 390 / currentZoom;
+    const height = 780 / currentZoom;
+    const x = (390 - width) / 2;
+    const y = (780 - height) / 2;
+    mapSVG.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+  }
+
+  function adjustZoom(delta) {
+    setMapZoom(currentZoom * (delta > 0 ? 1.15 : 0.85));
+  }
+
+  zoomInBtn.addEventListener('click', () => adjustZoom(1));
+  zoomOutBtn.addEventListener('click', () => adjustZoom(-1));
 
   function toggleDriverView() {
     driverView = !driverView;
@@ -784,6 +864,13 @@
     pickupPin.style.opacity = 1;
     pickupPin.style.transform = 'translate(-50%, -100%) scale(1.1)';
 
+    const pickLeft = parseFloat(target.left) / 100;
+    const pickTop = parseFloat(target.top) / 100;
+    if (pickupCircle) {
+      pickupCircle.setAttribute('cx', (pickLeft * 390).toString());
+      pickupCircle.setAttribute('cy', (pickTop * 780).toString());
+    }
+
     pinCard.style.left = target.left;
     pinCard.style.top = `calc(${target.top} - 36px)`;
     pinCard.innerHTML = `<strong>${target.name}</strong><br>${target.mi} • ${target.walk} • ${value} blocks`;
@@ -816,6 +903,7 @@
   });
 
   setMode(false);
+  setMapZoom(1);
 </script>
 </body>
 </html>
