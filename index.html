@@ -65,7 +65,7 @@
       z-index: 0;
     }
 
-    .map-overlay, .parade-route, .blocked-zone, .pickup-pin, .driver-dot, .pin-card {
+    .map-overlay, .parade-route, .blocked-zone, .pickup-pin, .driver-dot, .pin-card, .zone, .zone-legend {
       position: absolute;
       pointer-events: none;
     }
@@ -81,13 +81,14 @@
       z-index: 2;
       opacity: 0;
       transition: opacity .3s ease;
+      background: rgba(255, 165, 0, 0.35);
     }
 
     .blocked-zone {
       width: 240px;
       height: 120px;
       transform: rotate(-10deg);
-      background: rgba(255, 95, 54, 0.18);
+      background: rgba(255, 95, 54, 0.2);
       border: 1px dashed rgba(255, 95, 54, 0.8);
       left: 28%;
       top: 32%;
@@ -174,7 +175,7 @@
 
     .driver-view-btn {
       border: 1px solid #f5b330;
-      background: rgba(66, 15, 112, 0.9);
+      background: rgba(66, 15, 112, 0.85);
       color: #f5b330;
       font-weight: 700;
       border-radius: 10px;
@@ -183,76 +184,8 @@
       cursor: pointer;
       margin-right: 8px;
       height: 28px;
-    }
-
-    .zone {
-      position: absolute;
-      border: 2px dashed rgba(255, 255, 255, 0.3);
-      border-radius: 8px;
-      opacity: 0.4;
-      display: none;
-      color: rgba(255,255,255,0.9);
-      font-size: 11px;
-      text-align: center;
-      line-height: 1.1;
-      pointer-events: none;
-      padding-top: 6px;
-      z-index: 2;
-      user-select: none;
-    }
-
-    .zone.zone-fq { left: 44%; top: 21%; width: 160px; height: 120px; background: rgba(239, 68, 68, 0.45); }
-    .zone.zone-gd { left: 22%; top: 42%; width: 120px; height: 100px; background: rgba(34, 197, 94, 0.45); }
-    .zone.zone-uptown { left: 30%; top: 30%; width: 100px; height: 90px; background: rgba(34, 197, 94, 0.45); }
-    .zone.zone-midcity { left: 50%; top: 40%; width: 120px; height: 90px; background: rgba(156, 163, 175, 0.45); }
-    .zone.zone-warehouse { left: 58%; top: 49%; width: 120px; height: 85px; background: rgba(156, 163, 175, 0.45); }
-
-    .zone-legend {
-      position: absolute;
-      bottom: 112px;
-      left: 12px;
-      width: 160px;
-      background: rgba(15, 12, 30, 0.95);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      padding: 8px;
-      color: #f5f3ff;
-      font-size: 12px;
-      line-height: 1.3;
-      z-index: 6;
       display: none;
     }
-
-    .zone-legend .dot {
-      width: 11px;
-      height: 11px;
-      display: inline-block;
-      border-radius: 50%;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    .zone-legend .dot.green { background: rgba(34, 197, 94, 0.8); }
-    .zone-legend .dot.gray { background: rgba(156, 163, 175, 0.8); }
-    .zone-legend .dot.red { background: rgba(239, 68, 68, 0.8); }
-
-    .zone.active { background: rgba(34, 197, 94, 0.45) !important; }
-    .zone.inactive { background: rgba(156, 163, 175, 0.45) !important; }
-    .zone.blocked { background: rgba(239, 68, 68, 0.45) !important; pointer-events: none; }
-
-    .driver-summary {
-      margin-top: 12px;
-      display: none;
-      background: rgba(255, 206, 72, 0.14);
-      border: 1px solid rgba(255, 206, 72, 0.35);
-      border-radius: 12px;
-      padding: 11px 12px;
-      color: #fff;
-      font-size: 13px;
-      box-shadow: 0 4px 14px rgba(0,0,0,.22);
-    }
-
-    .mardi-gras .driver-summary { background: rgba(19, 2, 40, 0.9); border-color: rgba(245,179,48,0.45); }
 
     .mardi-toggle {
       position: absolute;
@@ -421,36 +354,108 @@
 
     .incentive-card span { display: block; }
 
+    .incentive-card.pulse {
+      animation: pulseGlow 2.5s ease-in-out infinite;
+      border-left: 4px solid #f5b330;
+      box-shadow: 0 0 12px rgba(245, 179, 48, 0.6);
+    }
+
     .incentive-card .gold {
       color: #f5b330;
       font-weight: 700;
     }
 
-    .mardi-gras .incentive-card {
+    .driver-earnings {
+      margin-top: 12px;
+      display: none;
       background: rgba(19, 2, 40, 0.9);
-      border-color: rgba(245,179,48,0.45);
+      border: 1px solid rgba(245, 179, 48, 0.45);
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.3;
+      box-shadow: 0 4px 14px rgba(0,0,0,.22);
+      font-weight: 700;
     }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(245, 179, 48, 0.3); }
+      50% { box-shadow: 0 0 18px rgba(245, 179, 48, 0.8); }
+    }
+
+    .zone {
+      position: absolute;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      opacity: 0.4;
+      display: none;
+      color: rgba(255,255,255,0.9);
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.1;
+      pointer-events: none;
+      padding-top: 6px;
+      z-index: 2;
+      user-select: none;
+    }
+
+    .zone.zone-fq { left: 44%; top: 21%; width: 160px; height: 120px; background: rgba(239, 68, 68, 0.45); }
+    .zone.zone-gd { left: 22%; top: 42%; width: 120px; height: 100px; background: rgba(34, 197, 94, 0.45); }
+    .zone.zone-uptown { left: 30%; top: 30%; width: 100px; height: 90px; background: rgba(34, 197, 94, 0.45); }
+    .zone.zone-midcity { left: 50%; top: 40%; width: 120px; height: 90px; background: rgba(156, 163, 175, 0.45); }
+    .zone.zone-warehouse { left: 58%; top: 49%; width: 120px; height: 85px; background: rgba(156, 163, 175, 0.45); }
+
+    .zone-legend {
+      position: absolute;
+      bottom: 112px;
+      left: 12px;
+      width: 160px;
+      background: rgba(15, 12, 30, 0.95);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 8px;
+      color: #f5f3ff;
+      font-size: 12px;
+      line-height: 1.3;
+      z-index: 6;
+      display: none;
+    }
+
+    .zone-legend .dot {
+      width: 11px;
+      height: 11px;
+      display: inline-block;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .zone-legend .dot.green { background: rgba(34, 197, 94, 0.8); }
+    .zone-legend .dot.gray { background: rgba(156, 163, 175, 0.8); }
+    .zone-legend .dot.red { background: rgba(239, 68, 68, 0.8); }
+
+    .zone.active { background: rgba(34, 197, 94, 0.45) !important; }
+    .zone.inactive { background: rgba(156, 163, 175, 0.45) !important; }
+    .zone.blocked { background: rgba(239, 68, 68, 0.45) !important; pointer-events: none; }
+
+    .driver-summary {
+      margin-top: 12px;
+      display: none;
+      background: rgba(255, 206, 72, 0.14);
+      border: 1px solid rgba(255, 206, 72, 0.35);
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: #fff;
+      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.22);
+    }
+
+    .mardi-gras .driver-summary { background: rgba(19, 2, 40, 0.9); border-color: rgba(245,179,48,0.45); }
 
     .mardi-gras .ride-btn { background: #f5b330; color: #2d0f4a; }
     .mardi-gras .top-bar { background: rgba(27, 14, 43, 0.78); }
     .mardi-gras .search-box { background: rgba(35, 14, 58, 0.95); border-color: rgba(245,179,48,0.35); }
-
-    .driver-status {
-      margin-top: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #a4b2c7;
-      font-size: 13px;
-    }
-
-    .driver-status .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #14b873;
-      box-shadow: 0 0 0 2px rgba(20, 184, 115, .35);
-    }
 
     @media (max-width: 420px) {
       .bottom-panel { padding: 12px; }
@@ -465,11 +470,11 @@
     <div class="map-placeholder"></div>
     <div class="parade-route" id="paradeRoute"></div>
     <div class="blocked-zone" id="blockedZone"></div>
-    <div class="zone zone-fq" id="zoneFrenchQuarter" data-zone="frenchQuarter">French Quarter</div>
-    <div class="zone zone-gd" id="zoneGardenDistrict" data-zone="gardenDistrict">Garden District</div>
-    <div class="zone zone-uptown" id="zoneUptown" data-zone="uptown">Uptown</div>
-    <div class="zone zone-midcity" id="zoneMidCity" data-zone="midCity">Mid-City</div>
-    <div class="zone zone-warehouse" id="zoneWarehouse" data-zone="warehouseDistrict">Warehouse District</div>
+    <div class="zone zone-fq" id="zoneFrenchQuarter">French Quarter</div>
+    <div class="zone zone-gd" id="zoneGardenDistrict">Garden District</div>
+    <div class="zone zone-uptown" id="zoneUptown">Uptown</div>
+    <div class="zone zone-midcity" id="zoneMidCity">Mid-City</div>
+    <div class="zone zone-warehouse" id="zoneWarehouse">Warehouse District</div>
 
     <div class="driver-dot" id="driver1" style="left: 46%; top: 33%;"></div>
     <div class="driver-dot" id="driver2" style="left: 40%; top: 42%;"></div>
@@ -478,21 +483,21 @@
     <div class="pickup-pin" id="pickupPin"></div>
     <div class="pin-card" id="pinCard"></div>
 
-    <div class="zone-legend" id="zoneLegend">
-      <div><span class="dot green"></span>Available</div>
-      <div><span class="dot gray"></span>Unavailable</div>
-      <div><span class="dot red"></span>Parade Blocked</div>
-    </div>
-
     <div class="top-bar">
       <div class="brand">Whisk</div>
-      <button id="driverViewBtn" class="driver-view-btn" style="display:none;">Driver View</button>
+      <button id="driverViewBtn" class="driver-view-btn">Driver View</button>
       <div class="icon">☰</div>
     </div>
 
     <div class="mardi-toggle" id="mardiToggle" aria-live="polite" aria-checked="false" role="button" tabindex="0">
       <span>Mardi Gras Mode</span>
       <span id="toggleState">OFF</span>
+    </div>
+
+    <div class="zone-legend" id="zoneLegend">
+      <div><span class="dot green"></span>Available</div>
+      <div><span class="dot gray"></span>Unavailable</div>
+      <div><span class="dot red"></span>Parade Blocked</div>
     </div>
   </div>
 
@@ -507,12 +512,14 @@
 
     <div class="incentive-card" id="incentiveCard" style="display:none;">
       <div>
-        <span class="gold">🔥 High Demand</span>
-        <span>+ $4.50/ride bonus — French Quarter</span>
+        <span class="gold" id="incentiveTitle">🔥 High Demand — French Quarter</span>
+        <span id="incentiveWait">Estimated wait: 12 min</span>
       </div>
-      <div>
-        <strong>~8 min</strong>
-      </div>
+    </div>
+
+    <div class="driver-earnings" id="driverEarningsCard" style="display:none;">
+      <div id="driverTopBonus">🔥 Top Bonus: +$6.00/ride — Uptown</div>
+      <div id="driverRidersWaiting">11 riders waiting</div>
     </div>
 
     <div class="driver-summary" id="driverSummary">You are active in 2 zones — 4 riders nearby.</div>
@@ -555,6 +562,7 @@
   const walkSliderGroup = document.getElementById('walkSliderGroup');
   const driverViewBtn = document.getElementById('driverViewBtn');
   const driverSummary = document.getElementById('driverSummary');
+  const driverEarningsCard = document.getElementById('driverEarningsCard');
   const zoneLegend = document.getElementById('zoneLegend');
 
   const zoneStates = {
@@ -565,6 +573,14 @@
     warehouseDistrict: false
   };
 
+  const zoneNames = {
+    frenchQuarter: 'French Quarter',
+    gardenDistrict: 'Garden District',
+    uptown: 'Uptown',
+    midCity: 'Mid-City',
+    warehouseDistrict: 'Warehouse District'
+  };
+
   const zoneElements = {
     frenchQuarter: document.getElementById('zoneFrenchQuarter'),
     gardenDistrict: document.getElementById('zoneGardenDistrict'),
@@ -573,7 +589,13 @@
     warehouseDistrict: document.getElementById('zoneWarehouse')
   };
 
-  let driverView = false;
+  const surgeInfo = {
+    frenchQuarter: { wait: '12 min', bonus: '+$6.00/ride', demand: 'High Demand — French Quarter' },
+    gardenDistrict: { wait: '6 min', bonus: '+$3.25/ride', demand: 'High Demand — Garden District' },
+    uptown: { wait: '8 min', bonus: '+$4.50/ride', demand: 'High Demand — Uptown' },
+    midCity: { wait: '4 min', bonus: '+$2.00/ride', demand: 'High Demand — Mid-City' },
+    warehouseDistrict: { wait: '9 min', bonus: '+$5.00/ride', demand: 'High Demand — Warehouse District' }
+  };
 
   const pickupNodes = [
     {name: 'St. Charles Ave & Jackson Ave', min: 1, max: 2, left: '50%', top: '55%', mi: '0.2 mi', walk: '~4 min walk'},
@@ -581,22 +603,51 @@
     {name: 'Tchoupitoulas St & Nashville Ave', min: 4, max: 5, left: '61%', top: '54%', mi: '0.6 mi', walk: '~11 min walk'}
   ];
 
+  let modeOn = false;
+  let driverView = false;
+
   function getPickupByDistance(blocks) {
     return pickupNodes.find(p => blocks >= p.min && blocks <= p.max) || pickupNodes[0];
   }
 
-  let modeOn = false;
+  function getTopBonusZone() {
+    return Object.keys(surgeInfo).reduce((best, zone) => {
+      const numeric = Number(surgeInfo[zone].bonus.replace(/[+\$\/ride]/g, ''));
+      const bestNumeric = best ? Number(surgeInfo[best].bonus.replace(/[+\$\/ride]/g, '')) : 0;
+      return numeric > bestNumeric ? zone : best;
+    }, 'frenchQuarter');
+  }
+
+  function updateSurgeRiderBanner() {
+    const data = surgeInfo.frenchQuarter;
+    document.getElementById('incentiveTitle').textContent = `🔥 ${data.demand}`;
+    document.getElementById('incentiveWait').textContent = `Estimated wait: ${data.wait}`;
+    incentiveCard.classList.add('pulse');
+  }
+
+  function updateSurgeDriverBanner() {
+    const topZone = getTopBonusZone();
+    const label = surgeInfo[topZone];
+    document.getElementById('driverTopBonus').textContent = `🔥 Top Bonus: ${label.bonus} — ${zoneNames[topZone]}`;
+    document.getElementById('driverRidersWaiting').textContent = '11 riders waiting';
+  }
 
   function updateZoneOverlays() {
     Object.keys(zoneStates).forEach(zone => {
       const el = zoneElements[zone];
       if (!el) return;
+      const zoneInfo = surgeInfo[zone];
+      const zoneText = zoneNames[zone];
+
       if (zone === 'frenchQuarter') {
         el.className = 'zone zone-fq blocked';
       } else {
-        el.className = 'zone zone-' + zone.toLowerCase().replace(/\s/g, '') + (zoneStates[zone] ? ' active' : ' inactive');
+        el.className = `zone zone-${zone.toLowerCase().replace(/\s/g, '')} ${zoneStates[zone] ? 'active' : 'inactive'}`;
       }
+
+      el.innerHTML = `<div style="font-weight:700;">${zoneText}</div><div style="margin-top:4px; color:#f5b330; font-size:12px;">${zoneInfo ? zoneInfo.bonus : '+$0.00'}</div>`;
       el.style.display = driverView ? 'block' : 'none';
+      el.style.cursor = driverView && zone !== 'frenchQuarter' ? 'pointer' : 'default';
       el.style.pointerEvents = driverView && zone !== 'frenchQuarter' ? 'auto' : 'none';
     });
     zoneLegend.style.display = driverView ? 'block' : 'none';
@@ -605,8 +656,10 @@
   function toggleDriverView() {
     driverView = !driverView;
     driverViewBtn.textContent = driverView ? 'Rider View' : 'Driver View';
+
     if (driverView) {
       incentiveCard.style.display = 'none';
+      driverEarningsCard.style.display = 'block';
       driverSummary.style.display = 'block';
       detailsText.style.display = 'none';
       pickupPin.style.opacity = 0;
@@ -614,20 +667,24 @@
       paradeRoute.style.opacity = 0.35;
       blockedZone.style.opacity = 0.75;
       updateZoneOverlays();
+      updateSurgeDriverBanner();
       driverSummary.innerText = `You are active in ${Object.values(zoneStates).filter(Boolean).length} zones — 4 riders nearby.`;
     } else {
       incentiveCard.style.display = 'flex';
+      driverEarningsCard.style.display = 'none';
       driverSummary.style.display = 'none';
       detailsText.style.display = 'block';
       paradeRoute.style.opacity = 1;
       blockedZone.style.opacity = 1;
       updatePickupFromSlider();
       updateZoneOverlays();
+      updateSurgeRiderBanner();
     }
   }
 
   function setMode(on) {
     modeOn = on;
+
     if (on) {
       app.classList.add('mardi-gras');
       toggle.classList.add('on');
@@ -646,9 +703,11 @@
       document.getElementById('driver3').style.opacity = 1;
       updatePickupFromSlider();
       updateZoneOverlays();
+      updateSurgeRiderBanner();
       driverView = false;
       driverViewBtn.textContent = 'Driver View';
       driverSummary.style.display = 'none';
+      driverEarningsCard.style.display = 'none';
       detailsText.style.display = 'block';
       rideBtn.textContent = 'Request Mardi Gras Pick-up';
       rideBtn.style.background = '#f5b330';
@@ -671,8 +730,10 @@
       document.getElementById('driver3').style.opacity = 0;
       driverViewBtn.style.display = 'none';
       zoneLegend.style.display = 'none';
+      incentiveCard.classList.remove('pulse');
       Object.values(zoneElements).forEach(el => el.style.display = 'none');
       driverSummary.style.display = 'none';
+      driverEarningsCard.style.display = 'none';
       detailsText.style.display = 'block';
       rideBtn.textContent = 'Request Whisk • $9–$12';
       rideBtn.style.background = '#3b82f6';
@@ -682,6 +743,7 @@
   function updatePickupFromSlider() {
     const value = Number(walkSlider.value);
     const target = getPickupByDistance(value);
+
     walkLabel.textContent = `${value} block${value === 1 ? '' : 's'}`;
 
     pickupPin.style.left = target.left;
@@ -720,7 +782,6 @@
     updatePickupFromSlider();
   });
 
-  // initial neutral mode
   setMode(false);
 </script>
 </body>
